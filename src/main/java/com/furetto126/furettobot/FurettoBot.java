@@ -20,7 +20,7 @@ public class FurettoBot{
         builder.disableCache(CacheFlag.MEMBER_OVERRIDES);
         builder.setBulkDeleteSplittingEnabled(false);
         builder.setCompression(Compression.NONE);
-        builder.setActivity(Activity.watching("Morbius"));
+        builder.setActivity(Activity.watching("you :O"));
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
         registerListeners();
         builder.build();

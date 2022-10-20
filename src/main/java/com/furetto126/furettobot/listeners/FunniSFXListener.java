@@ -40,7 +40,7 @@ public class FunniSFXListener extends ListenerAdapter{
             }
             audioManager.closeAudioConnection();
         }
-        if (audioChannel != null){
+        //if (audioChannel != null){
             switch (message) {
                 case "!boom" -> {
                     PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/829pvBHyG6I");
@@ -115,8 +115,28 @@ public class FunniSFXListener extends ListenerAdapter{
                 case "!watdadawgdoin"-> {
                     PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/SdmfidIYS84");
                 }
+                case "!yippe"-> {
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/s0E5Slqdo1M");
+                }
+                case "!huh"-> {
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/4kEO7VjKRB8");
+                }
+                case "!imded" -> {
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/MC8QG4x3wvo");
+                }
+                case "!joebiden" -> {
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/-GpzFY9jL88");
+                }
+                case "!bettercallsaul" -> {
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/VV6446zo0V4");
+                }
+                case "!applause" -> {
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/0mfJn604GT4");
+                }
+                case "!goofy" -> {
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/JAW9y7mosq0");
+                }
             }
         }
-
     }
-}
+//}

@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 public class CommandsListener extends ListenerAdapter {
 
     public void onMessageReceived(@Nonnull MessageReceivedEvent e) {
-        Character prefix = '!';
+        char prefix = '!';
         String messageSent = e.getMessage().getContentRaw();
 
         if (!e.isFromGuild()) {
