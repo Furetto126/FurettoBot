@@ -1,12 +1,32 @@
 package com.furetto126.furettobot.listeners;
 
+import com.furetto126.furettobot.FunniSounds.PlayerManager;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.AudioChannel;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.managers.AudioManager;
+import net.dv8tion.jda.api.utils.WidgetUtil;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CommandsListener extends ListenerAdapter {
 
+    private String[] soundEffects = new String[]{"boom", "rightback", "fart", "alarm", "omagaud", "bruh", "sans", "bell", "bonk", "oof", "classic", "aaaugh", "explosion", "ayo", "yessir", "e", "heheheha", "boomspam", "amogus", "sus", "mogusdrip", "watdadawgdoin", "yippe", "huh", "imded", "joebiden", "bettercallsaul", "applause", "bass", "youtried", "baller", "dahell", "higher"};
+    private String[] soundEffectsLinks = new String[]{"https://youtu.be/829pvBHyG6I", "https://youtu.be/1C9h0_cIvLg", "https://youtu.be/MBmb5_TTT-w", "https://youtu.be/8-pOCeuXhDM", "https://youtu.be/uZbluITLgyg", "https://youtu.be/2ZIpFytCSVc", "https://youtu.be/ZICTaBZ-m8A", "https://youtu.be/umqA5IMx_2I", "https://youtu.be/gwxTZaa3NgI", "https://youtu.be/f49ELvryhao", "https://youtu.be/-omIk4tmtoI", "https://youtu.be/JHyrXjoXlMo", "https://youtu.be/o84vJH19toI", "https://youtu.be/nCuSNh58uCA", "https://youtu.be/7Rhb-1TmJOo", "https://youtu.be/4TbLqs92VKA", "https://youtu.be/FOzBhKTOoLQ", "https://youtu.be/RDyYluQuZRc", "https://youtu.be/4KfC923EFsY", "https://youtu.be/ekL881PJMjI", "https://www.youtube.com/watch?v=P8boOf5gQKg", "https://youtu.be/SdmfidIYS84", "https://youtu.be/s0E5Slqdo1M", "https://youtu.be/4kEO7VjKRB8", "https://youtu.be/MC8QG4x3wvo", "https://youtu.be/-GpzFY9jL88", "https://youtu.be/VV6446zo0V4", "https://youtu.be/0mfJn604GT4", "https://youtu.be/qPPF1j6bVlQ", "https://youtu.be/yaYW55UqbCQ", "https://youtu.be/SYnlIyFmBYI", "https://youtu.be/KDvJZTrq8V8", "https://youtu.be/m2QcRjscUn4"};
     public void onMessageReceived(@Nonnull MessageReceivedEvent e) {
         char prefix = '!';
         String messageSent = e.getMessage().getContentRaw();
@@ -82,6 +102,79 @@ public class CommandsListener extends ListenerAdapter {
         }
         if (messageSent.contains("amogus")) {
             e.getChannel().sendMessage("https://cdn.discordapp.com/attachments/965269865508274278/974389899153256498/IMG_20220512_202526.jpg").queue();
+        }
+    }
+
+    @Override
+    public void onGuildReady(@NotNull GuildReadyEvent e){
+        List<CommandData> commandData = new ArrayList<>();
+        commandData.add(Commands.slash("join", "FurettoBot joins vc ASAP, like instant teleportation :O"));
+        commandData.add(Commands.slash("leave", "Makes FurettoBot leave vc, why would you do that anyway?!"));
+        commandData.add(Commands.slash("play", "Makes FurettoBot sing sfx (he praticed hard for this)")
+                .addOption(OptionType.STRING, "effectname", "Choose the sound effect you want to play from our hand picked list sir", true, true));
+        commandData.add(Commands.slash("playlink", "Makes FurettoBot play sounds from any link on his pianoguitarbassviolin™")
+                .addOption(OptionType.STRING, "link", "Link to play", true, false));
+        e.getGuild().updateCommands().addCommands(commandData).queue();
+    }
+
+    @Override
+    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent e){
+
+        if (e.getName().equals("play") && e.getFocusedOption().getName().equals("effectname")){
+            List<Command.Choice> options = Stream.of(soundEffects)
+                    .filter(soundEffects -> soundEffects.startsWith(e.getFocusedOption().getValue()))
+                    .map(soundEffects -> new Command.Choice(soundEffects, soundEffects))
+                    .collect(Collectors.toList());
+            e.replyChoices(options).queue();
+        }
+    }
+
+    @Override
+    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent e){
+
+        String command = e.getName();
+        AudioChannel audioChannel = e.getMember().getVoiceState().getChannel();
+        AudioManager audioManager = e.getGuild().getAudioManager();
+
+        if (command.equalsIgnoreCase("join")) {
+            if (!e.getMember().getVoiceState().inAudioChannel()) {
+                e.reply("You must be in a voice channel to use this command! *bozo*").queue();
+                return;
+            }
+            else if (!e.getGuild().getSelfMember().hasPermission(audioChannel, Permission.VOICE_CONNECT)) {
+                e.reply("I don't have permissions to join voice channels! Ask an Admin to fix it or Furetto126 cuz he dumb").queue();
+                return;
+            }else {
+                audioManager.openAudioConnection(audioChannel);
+                e.reply("Joined! :D").queue();
+            }
+        }
+        else if (command.equalsIgnoreCase("leave")) {
+               if (e.getGuild().getSelfMember().getVoiceState().inAudioChannel()){
+                   audioManager.closeAudioConnection();
+               }else{
+                   e.reply("I'm not in a voice channel! *Psst...do /join first :smirk:*").queue();
+                   return;
+            }
+        } else if (command.equalsIgnoreCase("play")) {
+            if (!e.getGuild().getSelfMember().getVoiceState().inAudioChannel()){
+                e.reply("I'm not in a voice channel! * Psst...do /join first :smirk: *").queue();
+            }else {
+                int i = 0;
+                boolean foundMatch = false;
+                for (String sfxName : soundEffects) {
+                    if (e.getOption("effectname").getAsString().equalsIgnoreCase(sfxName)){
+                        foundMatch = true;
+                        break;
+                    }else {
+                        i++;
+                    }
+                }
+                if (foundMatch){
+                    e.reply("Playing " + soundEffects[i]).setEphemeral(true).queue();
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), soundEffectsLinks[i]);
+                }
+            }
         }
     }
 }

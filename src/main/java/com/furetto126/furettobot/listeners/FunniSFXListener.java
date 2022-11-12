@@ -136,6 +136,21 @@ public class FunniSFXListener extends ListenerAdapter{
                 case "!goofy" -> {
                     PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/JAW9y7mosq0");
                 }
+                case "!bass" -> {
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/qPPF1j6bVlQ");
+                }
+                case "!youtried" -> {
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/yaYW55UqbCQ");
+                }
+                case "!baller" -> {
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/SYnlIyFmBYI");
+                }
+                case "!dahell" -> {
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/KDvJZTrq8V8");
+                }
+                case "!higher" -> {
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), "https://youtu.be/m2QcRjscUn4");
+                }
             }
         }
     }
