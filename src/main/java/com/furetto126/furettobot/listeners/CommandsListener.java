@@ -14,10 +14,13 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.managers.AudioManager;
-import net.dv8tion.jda.api.utils.WidgetUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +28,8 @@ import java.util.stream.Stream;
 
 public class CommandsListener extends ListenerAdapter {
 
-    private String[] soundEffects = new String[]{"boom", "rightback", "fart", "alarm", "omagaud", "bruh", "sans", "bell", "bonk", "oof", "classic", "aaaugh", "explosion", "ayo", "yessir", "e", "heheheha", "boomspam", "amogus", "sus", "mogusdrip", "watdadawgdoin", "yippe", "huh", "imded", "joebiden", "bettercallsaul", "applause", "bass", "youtried", "baller", "dahell", "higher"};
-    private String[] soundEffectsLinks = new String[]{"https://youtu.be/829pvBHyG6I", "https://youtu.be/1C9h0_cIvLg", "https://youtu.be/MBmb5_TTT-w", "https://youtu.be/8-pOCeuXhDM", "https://youtu.be/uZbluITLgyg", "https://youtu.be/2ZIpFytCSVc", "https://youtu.be/ZICTaBZ-m8A", "https://youtu.be/umqA5IMx_2I", "https://youtu.be/gwxTZaa3NgI", "https://youtu.be/f49ELvryhao", "https://youtu.be/-omIk4tmtoI", "https://youtu.be/JHyrXjoXlMo", "https://youtu.be/o84vJH19toI", "https://youtu.be/nCuSNh58uCA", "https://youtu.be/7Rhb-1TmJOo", "https://youtu.be/4TbLqs92VKA", "https://youtu.be/FOzBhKTOoLQ", "https://youtu.be/RDyYluQuZRc", "https://youtu.be/4KfC923EFsY", "https://youtu.be/ekL881PJMjI", "https://www.youtube.com/watch?v=P8boOf5gQKg", "https://youtu.be/SdmfidIYS84", "https://youtu.be/s0E5Slqdo1M", "https://youtu.be/4kEO7VjKRB8", "https://youtu.be/MC8QG4x3wvo", "https://youtu.be/-GpzFY9jL88", "https://youtu.be/VV6446zo0V4", "https://youtu.be/0mfJn604GT4", "https://youtu.be/qPPF1j6bVlQ", "https://youtu.be/yaYW55UqbCQ", "https://youtu.be/SYnlIyFmBYI", "https://youtu.be/KDvJZTrq8V8", "https://youtu.be/m2QcRjscUn4"};
+    private String[] soundEffects = new String[]{"boom", "rightback", "fart", "alarm", "omagaud", "bruh", "sans", "bell", "bonk", "oof", "classic", "aaaugh", "explosion", "ayo", "yessir", "e", "heheheha", "boomspam", "amogus", "sus", "mogusdrip", "watdadawgdoin", "yippe", "huh", "imded", "joebiden", "bettercallsaul", "applause", "bass", "youtried", "baller", "dahell", "higher", "ping"};
+    private String[] soundEffectsLinks = new String[]{"https://youtu.be/829pvBHyG6I", "https://youtu.be/1C9h0_cIvLg", "https://youtu.be/MBmb5_TTT-w", "https://youtu.be/8-pOCeuXhDM", "https://youtu.be/uZbluITLgyg", "https://youtu.be/2ZIpFytCSVc", "https://youtu.be/ZICTaBZ-m8A", "https://youtu.be/umqA5IMx_2I", "https://youtu.be/gwxTZaa3NgI", "https://youtu.be/f49ELvryhao", "https://youtu.be/-omIk4tmtoI", "https://youtu.be/JHyrXjoXlMo", "https://youtu.be/o84vJH19toI", "https://youtu.be/nCuSNh58uCA", "https://youtu.be/7Rhb-1TmJOo", "https://youtu.be/4TbLqs92VKA", "https://youtu.be/FOzBhKTOoLQ", "https://youtu.be/RDyYluQuZRc", "https://youtu.be/4KfC923EFsY", "https://youtu.be/ekL881PJMjI", "https://www.youtube.com/watch?v=P8boOf5gQKg", "https://youtu.be/SdmfidIYS84", "https://youtu.be/s0E5Slqdo1M", "https://youtu.be/4kEO7VjKRB8", "https://youtu.be/MC8QG4x3wvo", "https://youtu.be/-GpzFY9jL88", "https://youtu.be/VV6446zo0V4", "https://youtu.be/0mfJn604GT4", "https://youtu.be/qPPF1j6bVlQ", "https://youtu.be/yaYW55UqbCQ", "https://youtu.be/SYnlIyFmBYI", "https://youtu.be/KDvJZTrq8V8", "https://youtu.be/m2QcRjscUn4", "https://youtu.be/jiWj1zZlRjQ"};
     public void onMessageReceived(@Nonnull MessageReceivedEvent e) {
         char prefix = '!';
         String messageSent = e.getMessage().getContentRaw();
@@ -156,7 +159,8 @@ public class CommandsListener extends ListenerAdapter {
                    e.reply("I'm not in a voice channel! *Psst...do /join first :smirk:*").queue();
                    return;
             }
-        } else if (command.equalsIgnoreCase("play")) {
+        }
+        else if (command.equalsIgnoreCase("play")) {
             if (!e.getGuild().getSelfMember().getVoiceState().inAudioChannel()){
                 e.reply("I'm not in a voice channel! * Psst...do /join first :smirk: *").queue();
             }else {
@@ -171,9 +175,28 @@ public class CommandsListener extends ListenerAdapter {
                     }
                 }
                 if (foundMatch){
-                    e.reply("Playing " + soundEffects[i]).setEphemeral(true).queue();
+                    e.reply("Queued " + soundEffects[i]).setEphemeral(true).queue();
                     PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), soundEffectsLinks[i]);
                 }
+            }
+        }
+        else if (command.equalsIgnoreCase("playlink")) {
+            if (!e.getGuild().getSelfMember().getVoiceState().inAudioChannel()){
+                e.reply("I'm not in a voice channel! * Psst...do /join first :smirk: *").queue();
+            }else{
+                e.deferReply();
+                try {
+                    URL url = new URL(e.getOption("link").getAsString());
+                    URLConnection conn = url.openConnection();
+                    conn.connect();
+                    PlayerManager.getInstance().loadAndPlay(e.getTextChannel(), e.getOption("link").getAsString());
+                    e.reply("Playing...").queue();
+                } catch (MalformedURLException ex) {
+                    e.reply("This is not a valid url bozo").setEphemeral(true).queue();
+                } catch (IOException ex) {
+                    e.reply("could not connect to this url wtf").setEphemeral(true).queue();
+                }
+
             }
         }
     }
